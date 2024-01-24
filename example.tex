@@ -226,7 +226,8 @@ cloud-native application development.
 
 \begin{table}[ht]
 \small
-\caption{Cost AWS} \label{tab:costos}
+\caption{Cost AWS} \label{tab:costos} %Probably add something about the role of
+                                %every service - JJ
 \begin{tabular}{p{3.4cm}  p{2cm}  p{1.5cm} }
 Service                           & Price         & Free tier \\
 \hline 
@@ -241,7 +242,9 @@ Next 9.999 TB / month             & \$0.09 per GB &           \\
 \hline
 per vCPU per hour                 & \$0.040480    &           \\
 per GB per hour                   & \$0.004445    &           \\
-Fargate Ephemeral Storage GB per hour   &  \$0.000111   &  20 GB \\
+Fargate Ephemeral Storage GB per hour   &  \$0.000111   &  20 GB \\ % But are
+                                % you using this or Fargate Tasks? Is it the
+                                % same cost?
 \hline
 \multicolumn{3}{c}{\textbf{Amazon Cloud Watch} }                       \\
 \hline
@@ -253,7 +256,8 @@ Collect (Data Ingestion)          &               &           \\
 
 \begin{table*}[ht]
 \centering
-\caption{Experimental Setup}\label{tab:alg_params}
+\caption{Experimental Setup}\label{tab:alg_params} % Please say something about
+                                % how these values are obtained - JJ
 \setlength{\tabcolsep}{10pt}
 \begin{tabular}{l l l}
 \hline
@@ -267,13 +271,15 @@ Cloud       & Size              & 10       \\
             & Iterations        &  4       \\
             & Cycles            & 10       \\
             & Dimensions        & 15       \\   
-            & \#Function Evaluations   & 14400 or 16000\\ \hline
+                   & \# Function Evaluations   & 14400 or 16000\\ \hline
+  % Also why these values are different. Make captions as self-explanatory as
+  % possible - JJ
 Local       & Size              & 10       \\
             & Swarms            & 16       \\
             & Iterations        &  8       \\
             & Cycles            & 10       \\
             & Dimensions        & 15       \\   
-            & \#Function Evaluations   & 12,800   \\ \hline
+            & \# Function Evaluations   & 12,800   \\ \hline
 \end{tabular}
 \end{table*}
 
@@ -375,7 +381,9 @@ design, adding components and strategies that are presented in previous papers. 
 initial parameters of the algorithm to use an heterogeneous strategy \cite{mancilla2024pendiente} 
 together with an adaptation of these parameters considering the diversity and the number of iterations of the algorithm. 
 In these previous works we implemented the event-driven design using containers running 
-locally in a single workstation. Before explaining in detail the cloud deployment, we first explain the overall design. 
+locally in a single workstation.
+
+Before explaining in detail the cloud deployment, we first explain the overall design. 
 Figure \ref{fig:KafkEO} shows the main components of the system as swim lanes. 
 Following an event-driven design, we have two processing components (\texttt{combinator} and \texttt{worker}) that communicate via message queues.  
 The data passed and interchanged between components are swarms (or populations) containing 
@@ -384,15 +392,29 @@ population state from the search algorithm presents several advantages, we can s
 the system by adding new populations and we can even have multiple algorithms processing 
 the populations. In the current implementation we opted for having a single PSO algorithm 
 for processing all the populations. This is then a Multi-Swarm PSO.
+
+%This is a bit confusing, unless you're looking at the figure all the time, and
+%the Figure is quite far. Also, this explanation should be as self contained as
+%possible, even with references. Maybe start this paragraph with "These
+%multi-swarms are combined using the Combinator, shown in the left hand side of
+%Figure 1 (general concept) and dashed block of Figure 2 (actual
+%implementation)" - JJ
 The \texttt{combinator} process has other responsibilities, but is initially responsible 
 for  
-the first step. The \texttt{combinator} creates a certain number of swarms, each particle 
+the first step, that is, creating a certain number of swarms, with each particle 
 is randomly positioned in the search space. Together with the collection of particles the 
-initial parameters of the PSO algorithm are also generated. In this case, the parameters 
-are randomly generated with in a range of values. This is called a heterogeneous strategy, this strategy 
+initial parameters of the PSO algorithm are also generated randomly generated
+with in a range of values. This is called a heterogeneous strategy, % reference
+                                % - JJ
+this strategy 
 gives acceptable results without the burden of searching the 
 parameters experimentally \cite{mancilla2023optimization}. As a second step (2), the data 
-for each swarm is packed in a message in Json format and pushed to the \texttt{input-queue}. 
+for each swarm is packed in a message in JSON format and pushed to the
+\texttt{input-queue}. % Other serialization formats might be possible, and
+                      % probably have higher throughput; formats like feather or
+                      % other used in machine learning. It's probably OK if no
+                      % heavy reviewing is going to be applied, but bear in mind
+                      % for the future - JJ
 The queue is constantly consumed by \texttt{Worker Containers}. 
 We can have many workers, each worker is a daemon process that takes one message at a 
 time from the \texttt{input-queue} (3), reads the PSO parameters contained in the 
@@ -408,7 +430,8 @@ the two in a process similar to a one-point crossover (6). This process is simil
 to the migration step of other Multi-swarm PSO algorithms. Before sending the 
 modified swarms and depending on the current state of the algorithm a fuzzy 
 system adapts the \emph{C1} and \emph{C2} parameters of the swarms and pushes 
-the newly generated swarms again to the \texttt{input-queue} starting a new cycle. 
+the newly generated swarms again to the \texttt{input-queue} starting a new
+cycle. % First mention of C1 and C2, maybe a bit of explanation is needed - JJ
 
 We mentioned earlier that we have several options for the deployment of cloud-native 
 application to AWS, the most common approach is to use single or several virtual servers 
@@ -421,7 +444,8 @@ images to use, the CPU and memory requirements, networking information, among ot
 A task definition is similar to a \texttt{docker-compose} file in the sense that 
 defines the interaction of several containers. To minimize the need to manage the
 underlying infrastructure, we use what is called \texttt{Fargate Tasks}, this is a serverless
-compute engine that eliminates the need for launching and managing EC2 instances directly. 
+compute engine that eliminates the need for launching and managing EC2 instances
+directly. % this is the first reference, maybe explain why you need it - JJ
 We only need to specify the resource requirements needed for our task. 
 
 Figure \ref{fig:aws-deployment}, shows the main cloud computing technologies from 
@@ -445,12 +469,17 @@ using command-line interface.
 \includegraphics[width=0.8\textwidth]{plotW36P40}
 \caption{Execution of 36 workers and 40 swarms. The timeline at the bottom marks 
 the progression in seconds, indicating the duration of each PSO instance's activity 
-inside a particular worker container.}
+inside a particular worker container.} % Maybe explain why some workers
+                                % terminate early, and the kind of conclusion
+                                % one should gather from this - JJ
 \label{fig:36w40s}
 \end{figure*}
 
 Each of the services mentioned above has a cost that is charged monthly, the current 
-prices are shown in Table \ref{tab:costos}. 
+prices are shown in Table \ref{tab:costos}. % Maybe show the actual cost?
+                                % Compare it with the amortization cost of the
+                                % MacStudio + electricity consumption (Maybe a
+                                % reference to our ICSoft paper? - JJ
 First, we need to consider the cost of storing the Docker container images
 in the ECR. We have 50GB a month for free, but is important to remember that
 some container images can grow to several GB depending on the 
@@ -471,7 +500,9 @@ to keep track of the algorithm and to summarize the results.
 
 To test the deployment we are comparing the time of execution of 
 three configurations running on Amazon's Elastic Container Service against 
-a local execution using a Mac Studio workstation. We describe next the resource intensive 
+a local execution using a Mac Studio workstation. % Maybe add more details:
+                                % processor, threads, so on - JJ
+We describe next the resource intensive 
 optimization problem used as proof-of-concept.
 
 In this case, we want to optimize the membership functions 

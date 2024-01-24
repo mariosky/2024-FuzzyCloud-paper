@@ -75,7 +75,9 @@ Cloud Computing, Multi-Swarm Optimization, Fuzzy Control
 in which multiple swarms are created and
 added to an \texttt{input-queue}, multiple workers then evolve these swarms, and finally,
 they migrate in the \texttt{combinator} process. This cycle is repeated several times.
-The dynamic adaptation of \texttt{C1} and \texttt{C2} is executed each time a swarm reaches the
+The dynamic adaptation of \texttt{C1} and \texttt{C2} % These are not
+                                % represented in the Figure - JJ
+is executed each time a swarm reaches the
 \texttt{combinator}.}
 \label{fig:KafkEO}
 \end{figure*}
@@ -111,13 +113,21 @@ The combined use of these design patterns enhances the efficiency and adaptabili
 computational experiments in cloud-native environments.
 
 {\em Cloud-native applications} bring new methodologies and
-techniques \cite{Baldini2016287}. To better exploit the capabilities of the cloud
+techniques \cite{Baldini2016287} %to what? - JJ
+. To better exploit the capabilities of the cloud
 infrastructure, applications are implemented as reactive systems \cite{boner2014reactive}
-that are generally more scalable, flexible, and fault-tolerant. A reactive system can be
+that are generally more scalable, flexible, and fault-tolerant; these can be
 implemented as a loosely coupled collection of microservices.
 
-These components are easily implemented and deployed to cloud environments, where
-processing nodes can be defined and deployed using scripts, and scalable message 
+These components % which components? The previous paragraph talked about
+                 % applications, if you mean components of the application say
+                 % so - JJ
+are easily implemented and deployed to cloud environments, where
+processing nodes can be defined and deployed using scripts, % best practices
+                                % would say that you should use continuous
+                                % deployment procedures (including scripts,
+                                % Ansible or things like that - JJ
+and scalable message 
 queue services are provided to easily send and receive events. Additionally, 
 scalability in such systems is achieved through the automatic provisioning of 
 additional computing nodes as demand increases or in response to node failures, 
@@ -131,20 +141,22 @@ ensuring consistent performance and reliability.
 \end{figure*}
 
 Microservices are typically executed within isolated runtime environments called
-containers. These containers do more than just provide a runtime environment; 
-they encapsulate all the necessary components required for the microservice to 
-function autonomously. 
-This includes software libraries, binaries, and configuration files. Essentially, 
-containers package everything that a node needs to operate.
-The strength of a containerized application lies in its ease of operation on automation platforms. 
-These platforms are capable of taking containerized microservice-based
-applications from a local computer to be deployed in a cloud or an ephemeral 
-infrastructure \cite{gilbert2018cloud,kratzke2017understanding}. 
+containers \cite{liu2020microservices}. These containers do more than just
+provide a runtime environment; they encapsulate all the necessary components
+required for the microservice to function autonomously.  This includes software
+libraries, binaries, and configuration files. Essentially, containers package
+everything that a node needs to operate.  The strength of a containerized
+application lies in its ease of operation on automation platforms.  These
+platforms are capable of taking containerized microservice-based applications
+from a local computer to be deployed in a cloud or an ephemeral infrastructure
+\cite{gilbert2018cloud,kratzke2017understanding}.
 
 In our previous research \cite{merelo2019scaling}, we highlighted that a 
 reactive architecture is well-suited for implementing population-based metaheuristics if they require 
 extensive computational resources. Building on this foundation, the current work details the 
-deployment process of a reactive, container-based, multi-swarm PSO algorithm specifically designed for deployment in Amazon's AWS.
+deployment process of a reactive, container-based, multi-swarm PSO algorithm
+specifically designed for deployment in Amazon's AWS. % Please highlight
+                                % differences - JJ
 The optimization problem tackled in this work is presented in \cite{mancilla2021optimization} 
 and consists of tuning the membership functions of a fuzzy controller. This 
 optimization problem is computationally intensive, primarily because it requires 
@@ -155,7 +167,9 @@ Despite the computational demands of this optimization problem, the independent
 nature of solution evaluation in evolutionary algorithms allows for the efficient parallelization of work.
 In the literature, we found only a few works \cite{cortes2014optimal,oh2009design,ciurea2013determining}
 attempting to distribute fuzzy controller's optimization; however, these works
-have not fully leveraged the advancements in cloud-native technologies.
+have not fully leveraged the advancements in cloud-native technologies. %You
+                                %will have to prove you obtain better results in
+                                %some aspect that in those papers - JJ
 
 This gap presents an opportunity to explore how modern cloud-native solutions can 
 enhance population-based optimization. This examination focuses on the intricacies of 
@@ -163,7 +177,9 @@ deploying such an algorithm within a cloud environment, leveraging the scalabili
 flexibility of AWS services. The use of containerization, a key feature of this deployment, 
 offers the benefit, of having environment consistency and ease of scalability. This 
 approach aligns with the principles of reactive systems, ensuring that the deployed 
-algorithm is efficient in resource usage and robust and adaptable to varying computational loads.
+algorithm is efficient in resource usage and robust and adaptable to varying
+computational loads. %Maybe add something about replicability, and the fact that
+                     %it's open source - JJ
 
 In summary, our approach addresses a fuzzy control problem through the application
 of a cloud-native distributed Particle Swarm Optimization (PSO) algorithm, characterized 
